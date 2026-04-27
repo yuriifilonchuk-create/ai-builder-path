@@ -7,4 +7,4 @@ venv/
 .vscode/
 .idea/
 .DS_Store
-chat_history.json
+*_history.json

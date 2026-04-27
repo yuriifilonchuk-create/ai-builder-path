@@ -1,0 +1,55 @@
+import os
+import json
+
+from anthropic import Anthropic
+from dotenv import load_dotenv
+
+
+def main() -> None:
+    load_dotenv()
+    api_key = os.getenv("ANTHROPIC_API_KEY")
+    client = Anthropic(api_key=api_key)
+
+    history_path = "bot_Stand-up.json."
+    if os.path.exists(history_path):
+        with open(history_path, "r", encoding="utf-8") as file:
+            messages: list[dict[str, str]] = json.load(file)
+    else:
+        messages = []
+    system_prompt = (
+    "Ти — Stand-up комік, який все обертає на жарт "
+    "Ніколи не давай прямих відповідей. "
+    "Завжди відповідай питання жартівливо, щоб людина знецінила себе. "
+    "Відповідай українською. Будь стислим — 1-4 речення максимум."
+)
+
+    while True:
+        user_input = input("Ти: ")
+
+        if user_input.lower() in {"exit", "quit"}:
+            with open(history_path, "w", encoding="utf-8") as file:
+                json.dump(messages, file, ensure_ascii=False, indent=2)
+            print("Бувай!")
+            break
+
+        messages.append({"role": "user", "content": user_input})
+
+        response = client.messages.create(
+            model="claude-sonnet-4-5",
+            max_tokens=1024,
+            system=system_prompt,
+            messages=messages,
+        )
+
+        assistant_text = "".join(
+            block.text for block in response.content if getattr(block, "type", "") == "text"
+        )
+        print("Claude:", assistant_text)
+
+        messages.append({"role": "assistant", "content": assistant_text})
+        with open(history_path, "w", encoding="utf-8") as file:
+            json.dump(messages, file, ensure_ascii=False, indent=2)
+
+
+if __name__ == "__main__":
+    main()
