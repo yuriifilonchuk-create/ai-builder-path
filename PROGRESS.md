@@ -47,3 +47,36 @@
 ### Наступна сесія
 - Module 1: Python для AI
 - Перший проєкт: CLI persona bot
+
+## Модуль 1 завершено — 27 квітня 2026
+
+### Скрипти на GitHub
+- hello_ai.py — перший API call
+- cli_chat.py — інтерактивний чат з пам'яттю + sliding window
+- bot_mentor.py — Сократ-персонаж (питання у відповідь)
+- bot_critic.py — суворий код-рев'ювер
+- bot_stand-up.py — комедіант
+
+### Personal prompts library (prompts/)
+- create_first_ai_script.md
+- cli_chat_with_memory.md
+- sliding_window_history.md
+- system_prompt_personas.md
+
+### Технічні концепції
+- API vs Claude.ai (різниця, моделі оплати)
+- Stateless природа LLM, persistent storage через JSON
+- System prompts як інструмент програмування характеру
+- Token economics (квадратичний ріст витрат)
+- Sliding window як захист від token blow-up
+- Cursor + Cmd+L AI-coding workflow
+- Git workflow: add → commit → push
+- .gitignore як захист API key
+
+### Бізнес-розуміння
+- SaaS-бізнес-модель, MRR/ARR/churn/LTV/CAC
+- Реалістичні шанси досягти $10K MRR (1-3% за рік)
+- Як побудовані PhotoAI, Cursor, Lovable
+
+### Що далі
+- Модуль 2: streaming, structured outputs, tool use, multi-model
