@@ -4,6 +4,8 @@ import json
 from anthropic import Anthropic
 from dotenv import load_dotenv
 
+MAX_HISTORY = 10
+
 
 def main() -> None:
     load_dotenv()
@@ -13,9 +15,9 @@ def main() -> None:
     history_path = "chat_history.json"
     if os.path.exists(history_path):
         with open(history_path, "r", encoding="utf-8") as file:
-            messages: list[dict[str, str]] = json.load(file)
+            history: list[dict[str, str]] = json.load(file)
     else:
-        messages = []
+        history = []
     system_prompt = (
         "Ти — досвідчений ментор з програмування. "
         "Відповідай українською. Будь стислим, без зайвої води."
@@ -26,12 +28,14 @@ def main() -> None:
 
         if user_input.lower() in {"exit", "quit"}:
             with open(history_path, "w", encoding="utf-8") as file:
-                json.dump(messages, file, ensure_ascii=False, indent=2)
+                json.dump(history, file, ensure_ascii=False, indent=2)
             print("Бувай!")
             break
 
-        messages.append({"role": "user", "content": user_input})
+        history.append({"role": "user", "content": user_input})
+        messages = history[-MAX_HISTORY:]
 
+        print(f"[Історія: {len(messages)}/{MAX_HISTORY}]")
         response = client.messages.create(
             model="claude-sonnet-4-5",
             max_tokens=1024,
@@ -44,9 +48,10 @@ def main() -> None:
         )
         print("Claude:", assistant_text)
 
-        messages.append({"role": "assistant", "content": assistant_text})
+        history.append({"role": "assistant", "content": assistant_text})
+        messages = history[-MAX_HISTORY:]
         with open(history_path, "w", encoding="utf-8") as file:
-            json.dump(messages, file, ensure_ascii=False, indent=2)
+            json.dump(history, file, ensure_ascii=False, indent=2)
 
 
 if __name__ == "__main__":
